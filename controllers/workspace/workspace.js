@@ -3,7 +3,7 @@ const WorkSpace = require('../../models/workspace');
 module.exports = {
     addWorkspace: async (req, res, next) => {
         try {
-            const { userId, role } = req.decoded
+            const { _id, role } = req.user
             if (role !== "super-admin") {
                 return res.status(405).json({
                     success: false,
@@ -25,7 +25,7 @@ module.exports = {
                 challengeType,
                 ideaMembers,
                 challengeMembers,
-                createdBy: userId
+                createdBy: _id
             })
             await workspace.save()
             return res.status(201).json({
@@ -38,13 +38,13 @@ module.exports = {
             console.log("Error in adding workspace", err.message)
             return res.status(400).json({
                 success: false,
-                message: `Erro in adding workspace ${err.message}`
+                message: `Error in adding workspace ${err.message}`
             })
         }
     },
     updateWorkspace: async (req, res, next) => {
         try {
-            const { role } = req.decoded
+            const { role } = req.user
             const {workspaceId} = req.params
             if (role !== "super-admin") {
                 return res.status(405).json({
@@ -92,7 +92,7 @@ module.exports = {
     },
     getWorkspace: async (req, res, next) => {
         try {
-            const { userId } = req.decoded
+            const { _id } = req.user
             const workspaces = await WorkSpace.find({ createdBy: userId })
             if (workspaces.length === 0) {
                 return res.status(404).json({
@@ -142,7 +142,7 @@ module.exports = {
     deleteWorkspace: async (req, res, next) => {
         try {
             const { workspaceId } = req.params
-            const { userId } = req.decoded
+            const { _id } = req.user
             const workspace = await WorkSpace.findOne({ createdBy: userId })
             if (!workspace) {
                 return res.status(404).json({

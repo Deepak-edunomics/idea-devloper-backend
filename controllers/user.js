@@ -61,7 +61,8 @@ module.exports = {
                 subject: 'Accout verification for Idea Deployer',
                 text: 'Your verification code for registration is ' + otp
             };
-            await sgMail.send(msg)
+            const mailSent = await sgMail.send(msg)
+            console.log("dfevsd", mailSent)
             const { _id, role, isVerified } = newUser
             const payload = {
                 _id, firstName, lastName, organization, role, email, isVerified

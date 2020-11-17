@@ -61,7 +61,7 @@ router.post('/group',  passport.authenticate('jwt', { session: false }), addGrou
 // WORKSPACE ROUTES
 router.get('/workspace',  passport.authenticate('jwt', { session: false }), getWorkspace)
 router.get('/workspace/:workspaceId',  passport.authenticate('jwt', { session: false }), getWorkspaceById)
-router.post('/workspace',  passport.authenticate('jwt', { session: false }), addWorkspace);
+router.post('/workspace', passport.authenticate('jwt', { session: false }), addWorkspace);
 router.put('/workspace/:workspaceId',  passport.authenticate('jwt', { session: false }), updateWorkspace)
 router.delete('/workspace/:workspaceId',  passport.authenticate('jwt', { session: false }), deleteWorkspace)
 
