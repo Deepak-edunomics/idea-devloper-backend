@@ -3,11 +3,15 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport')
 const cors = require('cors');
-const dot = require('dotenv').config();
+
+
+const dotenv = require('dotenv');
+dotenv.config()
+
 
 var app = express();
 
-const apiroutes = require('./api/user');
+// const apiroutes = require('./api/user');
 const userRoutes = require('./api/userApi')
 
 app.use(bodyParser.json());
@@ -53,19 +57,18 @@ app.get("/", (req, res) => { res.send("Here") })
 
     // .catch(err => console.log(err))
 
+const PORT = process.env.PORT || 3001;
+
 mongoose.connect(process.env.MONGO_URL.replace("<password>", process.env.MONGO_PASSWORD)
     , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }).then(() => {
-        app.listen(process.env.PORT)
+        app.listen(PORT)
         console.log("server Started")
     }).catch((err) => {
         console.log("Error in connecting to DataBase", err.message)
     })
 
 
-app.listen(process.env.PORT || 3001, (err) =>
-    console.log(err ? err : `Server running on port ${process.env.PORT || 3001}...`)
 
-);
 
 // mongoose.connect("mongodb://127.0.0.1:27017/ideaDeveloper"
 //     , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify:false }).then(() => {
