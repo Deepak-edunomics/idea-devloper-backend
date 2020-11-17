@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose
 
-const challengeSchema = new Schema({
+const ideaSchema = new Schema({
     title: {
         type: String,
         required: true
@@ -11,36 +11,22 @@ const challengeSchema = new Schema({
         type: String,
         required: true
     },
-    startDate: {
-        type: String,
-        required: true,
-    },
-    endDate: {
-        type: String,
-        required: true,
-    },
-    categories: [{
+    challengeLinks: [{
         type: String
     }],
-    groups: [{
+    benefitSectors: [{
         type: String
     }],
     hide: {
         type: Boolean,
         default: false
     },
-    tags: [{
-        type: String
-    }],
     organization: {
         type: String
     },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'user'
-    },
-    image: {
-        type: String
     },
     attachement: {
         type: String
@@ -51,4 +37,4 @@ const challengeSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('challenge', challengeSchema);
+module.exports = mongoose.model('idea', ideaSchema);

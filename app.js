@@ -49,22 +49,30 @@ app.get("/", (req, res) => { res.send("Here") })
 //         }
 //     )
 //     .then(console.log('Database Connected'))
-//     .catch(err => console.log(err))
+    // 
 
+    // .catch(err => console.log(err))
 
-
-
-mongoose.connect("mongodb://127.0.0.1:27017/ideaDeveloper"
-    , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify:false }).then(() => {
-        console.log("Database connected")
+mongoose.connect(process.env.MONGO_URL.replace("<password>", process.env.MONGO_PASSWORD)
+    , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }).then(() => {
+        app.listen(process.env.PORT)
+        console.log("server Started")
     }).catch((err) => {
-        
         console.log("Error in connecting to DataBase", err.message)
-    })    
-
+    })
 
 
 app.listen(process.env.PORT || 3001, (err) =>
     console.log(err ? err : `Server running on port ${process.env.PORT || 3001}...`)
 
 );
+
+// mongoose.connect("mongodb://127.0.0.1:27017/ideaDeveloper"
+//     , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify:false }).then(() => {
+//         console.log("Database connected")
+//     }).catch((err) => {
+        
+//         console.log("Error in connecting to DataBase", err.message)
+//     })    
+
+
