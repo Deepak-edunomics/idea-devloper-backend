@@ -93,7 +93,7 @@ module.exports = {
     getWorkspace: async (req, res, next) => {
         try {
             const { _id } = req.user
-            const workspaces = await WorkSpace.find({ createdBy: userId })
+            const workspaces = await WorkSpace.find({ createdBy: _id })
             if (workspaces.length === 0) {
                 return res.status(404).json({
                     success: true,
@@ -143,7 +143,7 @@ module.exports = {
         try {
             const { workspaceId } = req.params
             const { _id } = req.user
-            const workspace = await WorkSpace.findOne({ createdBy: userId })
+            const workspace = await WorkSpace.findOne({ createdBy: _id })
             if (!workspace) {
                 return res.status(404).json({
                     success: false,
