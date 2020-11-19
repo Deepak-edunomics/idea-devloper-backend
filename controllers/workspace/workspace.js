@@ -19,10 +19,10 @@ module.exports = {
                 })
             }
             const workspace = await new WorkSpace({
+                challengeType,
                 title,
                 description,
                 moderators,
-                challengeType,
                 ideaMembers,
                 challengeMembers,
                 createdBy: _id
@@ -73,6 +73,9 @@ module.exports = {
                 workspace.challengeType = challengeType
             }
             if (ideaMembers) {
+                workspace.ideaMembers = ideaMembers
+            }
+            if (challengeMembers) {
                 workspace.challengeMembers = challengeMembers
             }
             await workspace.save()

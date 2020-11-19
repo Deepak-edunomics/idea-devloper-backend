@@ -13,7 +13,8 @@ const workSpaceSchema = new Schema({
         ref: 'user'
     }],
     challengeType: {
-        type: String
+        type: String,
+        required: true
     },
     challengeMembers: [{
         type: Schema.Types.ObjectId,
@@ -28,6 +29,10 @@ const workSpaceSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user'
     },
+    workflows: [{
+        type: Schema.Types.ObjectId,
+        ref: 'workflow'
+    }],
     createdAt: {
         type: Date,
         default: Date.now
