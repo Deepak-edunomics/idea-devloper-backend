@@ -66,7 +66,7 @@ router.put('/workspace/:workspaceId',  passport.authenticate('jwt', { session: f
 router.delete('/workspace/:workspaceId',  passport.authenticate('jwt', { session: false }), deleteWorkspace)
 
 //WORKFLOW ROUTES
-router.get('/workflow',  passport.authenticate('jwt', { session: false }), getWorkflow)
+router.get('/workflow/:workspaceId',  passport.authenticate('jwt', { session: false }), getWorkflow)
 router.get('/workflow/:workflowId',  passport.authenticate('jwt', { session: false }), getWorkflowById)
 router.post('/workflow',  passport.authenticate('jwt', { session: false }), addWorkflow);
 router.put('/workflow/:workflowId',  passport.authenticate('jwt', { session: false }), updateWorkflow)

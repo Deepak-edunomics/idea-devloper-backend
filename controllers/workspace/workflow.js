@@ -27,9 +27,9 @@ module.exports = {
     },
     updateWorkflow: async (req, res, next) => {
         try {
-            const { workspaceId } = req.params
+            const { workflowId } = req.params
             const {workflowName} = req.body
-            const workflow = await WorkFlow.findById(workspaceId)
+            const workflow = await WorkFlow.findById(workflowId)
             if (!workflow) {
                 return res.status(404).json({
                     success: false,
