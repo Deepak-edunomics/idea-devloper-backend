@@ -1,14 +1,14 @@
-const { ReplSet } = require('mongodb');
 const Stage = require('../../models/stage')
 
 module.exports = {
     addStage: async (req, res, next) => {
         try {
-            const { workflowId } = req.params;
-            const { stageName } = req.body
+            
+            const { stageName,ideationStage,workflowId } = req.body
             const stage = await new Stage({
                 workflow: workflowId,
-                stageName
+                stageName,
+                ideationStage,
             })
             await stage.save()
             return res.status(200).json({
@@ -26,10 +26,43 @@ module.exports = {
             })
         }
     },
+    updateStage: async (req, res, next) => {
+        try {
+            const {stageId} = req.params
+            const { stageName, ideationStage} = req.body
+            const stage = await Stage.findById(stageId)
+            if (!stage) {
+                return res.status(404).json({
+                    message: "Stage not found",
+                    success: false
+                })
+            }
+            if (stageName) {
+                stage.stageName = stageName
+            }
+            if (ideationStage) {
+                stage.ideationStage = ideationStage
+            }
+            await stage.save()
+            return res.status(200).json({
+                success: true,
+                message: "Succssfully created",
+                result: stage
+            })
+        }
+        catch (err) {
+            console.log("Error in updating stage", err.message)
+            return res.status(500).json({
+                success: false,
+                message: `Error in updating stage ${err.message}`,
+                error: error.message
+            })
+        }
+    },
     getStage: async (req, res, next) => {
         try {
-            const { workspaceId } = req.params;
-            const stages = await Stage.find({ workspace: workspaceId })
+            const { workflowId } = req.params;
+            const stages = await Stage.find({ workflow: workflowId})
             if (stages.length === 0) {
                 return res.status(400).json({
                     success: false,

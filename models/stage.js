@@ -11,6 +11,10 @@ const stageSchema = new Schema({
         type: String,
         required: true
     },
+    ideationStage: {
+        type: Boolean,
+        default: false
+    },
     rules: [{
         ruleName: {
             type: String,

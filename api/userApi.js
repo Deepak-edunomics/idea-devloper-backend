@@ -4,7 +4,9 @@ const passport = require('passport')
 
 
 //USER CONTROLLER
-const { userRegister, userLogin, emailVerification } = require('../controllers/user')
+const { userRegister, userLogin, emailVerification,
+    updatePassword, forgotPassword, postOTP
+} = require('../controllers/user')
 
 //EMPLOYEE CONTROLLER
 const { addEmployee, updateEmployee, deleteEmployee,
@@ -43,6 +45,9 @@ const {addIdea, updateIdea, deleteIdea, getIdeas, getIdeaById } = require('../co
 router.post('/register', userRegister)
 router.post('/login', userLogin)
 router.post('/emailVerification', emailVerification)
+router.post('/updatePassword', passport.authenticate('jwt', { session: false }), updatePassword)
+router.post('/forgotPassword', forgotPassword)
+router.post('/postOTP', postOTP)
 
 //EMPLOYEE ROUTES 
 router.get('/employee', passport.authenticate('jwt', { session: false }), getEmployee)
@@ -76,7 +81,7 @@ router.delete('/workflow/:workflowId',  passport.authenticate('jwt', { session: 
 router.get('/stage/:workflowId', passport.authenticate('jwt', { session: false }), getStage)
 router.get('/stage/:stageId', passport.authenticate('jwt', { session: false }), getStageById)
 router.post('/stage', passport.authenticate('jwt', { session: false }), addStage)
-router.delete('/stage/stageId', passport.authenticate('jwt', { session: false }), deleteStage)
+router.delete('/stage/:stageId', passport.authenticate('jwt', { session: false }), deleteStage)
 
 // CHALLENGE ROUTES
 router.get('/challenge/:challengeId', passport.authenticate('jwt', { session: false }), getChallengeById)
@@ -84,7 +89,6 @@ router.get('/challenge', passport.authenticate('jwt', { session: false }), getCh
 router.post('/challenge', passport.authenticate('jwt', { session: false }), addChallenge)
 router.put('/challenge/:challengeId', passport.authenticate('jwt', { session: false }), updateChallenge)
 router.delete('/challenge/:challengeId', passport.authenticate('jwt', { session: false }), deleteChallenge)
-
 
 // IDEA ROUTES
 router.get('/idea/:ideaId', passport.authenticate('jwt', { session: false }), getIdeaById)

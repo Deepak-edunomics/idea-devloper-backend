@@ -60,7 +60,7 @@ app.get("/", (req, res) => { res.send("Here") })
 const PORT = process.env.PORT || 3001;
 
 mongoose.connect(process.env.MONGO_URL.replace("<password>", process.env.MONGO_PASSWORD)
-    , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }).then(() => {
+    , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }).then(() => {
         app.listen(PORT)
         console.log("server Started")
     }).catch((err) => {

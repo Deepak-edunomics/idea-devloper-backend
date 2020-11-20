@@ -61,8 +61,7 @@ module.exports = {
                 subject: 'Accout verification for Idea Deployer',
                 text: 'Your verification code for registration is ' + otp
             };
-            const mailSent = await sgMail.send(msg)
-            console.log("dfevsd", mailSent)
+            await sgMail.send(msg)
             const { _id, role, isVerified } = newUser
             const payload = {
                 _id, firstName, lastName, organization, role, email, isVerified
@@ -209,5 +208,98 @@ module.exports = {
             console.log("Error in emailVerification", err.message)
             return res.status(400).json({ message: `Error in emailVerification ${err.message}` })
         }
+    },
+    forgotPassword: async (req, res, next) => {
+        let errors = {}
+        const { email } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            errors.email= "User not found"
+            return res.status(404).json(errors)
+        }
+        const generateOTP = () => {
+            var digits = '0123456789';
+            let OTP = '';
+            for (let i = 0; i < 6; i++) {
+                OTP += digits[Math.floor(Math.random() * 10)];
+            }
+            return OTP;
+        }
+        const otp = generateOTP()
+        const msg = {
+            to: user.email,
+            from: 'hemant@edunomics.in',
+            subject: 'Forgot password for Idea Deployer',
+            text: 'Your verification code for forgot password is ' + otp
+        };
+        await sgMail.send(msg)
+        user.otp = otp
+        await user.save()
+        const helper = async () => {
+            newUser.otp = ""
+            await newUser.save()
+        }
+        setTimeout(() => {
+            helper()
+        }, 300000)
+        return res.status(200).json({
+            success: true,
+            message: "An otp has been sent to you email"
+        })
+    },
+    postOTP: async (req, res, next) => {
+        let errors = {}
+        const { email, otp, newPassword } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            errors.email = "Invalid email"
+            return res.status(404).json(errors)
+        }
+        if (user.otp !== otp) {
+            errors.otp = "Invalid OTP"
+            return res.status(400).json(errors)
+        }
+        let hashedPassword = await bcrypt.hash(newPassword, 10)
+        user.password = hashedPassword
+        await user.save()
+        const payload = {
+            _id, firstName, lastName, organization, role, email:user.email, isVerified
+        } = user
+        jwt.sign(
+            payload,
+            key.secretKey,
+            { expiresIn: 14400 },
+            (err, token) => {
+               return res.status(200).json({
+                    success: true,
+                    message: "Password updated successfully",
+                    token: 'Bearer ' + token,
+                    result: payload
+                });
+            }
+        );
+    },
+    updatePassword: async (req, res, next) => {
+        let errors = {}
+        const { _id } = req.user
+        const {oldPassword, newPassword } = req.body
+        const user = await User.findById(_id)
+        if (!user) {
+            errors.oldPassword = "User not found"
+            return res.status(404).json(errors)
+        }
+        const isCorrect = await bcrypt.compare(oldPassword, user.password)
+        if (!isCorrect) {
+            errors.oldPassword = 'Invalid old Password';
+            return res.status(404).json(errors);
+        }
+        let hashedPassword;
+        hashedPassword = await bcrypt.hash(newPassword, 10)
+        user.password = hashedPassword;
+        await user.save()
+        res.status(200).json({
+            success: true,
+            message: "Successfully updated password",
+        })
     }
 }
