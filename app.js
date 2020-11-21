@@ -71,10 +71,10 @@ mongoose.connect(process.env.MONGO_URL.replace("<password>", process.env.MONGO_P
 
 
 // mongoose.connect("mongodb://127.0.0.1:27017/ideaDeveloper"
-//     , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify:false }).then(() => {
+//     , { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }).then(() => {
+//         app.listen(PORT)
 //         console.log("Database connected")
 //     }).catch((err) => {
-        
 //         console.log("Error in connecting to DataBase", err.message)
 //     })    
 

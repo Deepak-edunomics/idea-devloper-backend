@@ -9,10 +9,12 @@ const Permission = require('../models/permission')
 
 //Config
 const key = require('../config/key')
+const sendEmail = require('../config/nodemailer')
+
 
 //For email
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey('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');
+// const sgMail = require('@sendgrid/mail');
+// sgMail.setApiKey('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');
 
 
 //Validation
@@ -24,6 +26,7 @@ const validateEmailVerification = require('../validation/user/emailVerification'
 module.exports = {
     userRegister: async (req, res, next) => {
         try {
+            console.log("req.body",req.body)
             const { errors, isValid } = validateUserRegister(req.body);
             if (!isValid) {
                 return res.status(400).json(errors)
@@ -55,13 +58,14 @@ module.exports = {
                 isVerified: false
             })
             await newUser.save()
-            const msg = {
-                to: newUser.email,
-                from: 'hemant@edunomics.in',
-                subject: 'Accout verification for Idea Deployer',
-                text: 'Your verification code for registration is ' + otp
-            };
-            await sgMail.send(msg)
+            await sendEmail(newUser.email, otp, "account-verification")
+            // const msg = {
+            //     to: newUser.email,
+            //     from: 'hemant@edunomics.in',
+            //     subject: 'Accout verification for Idea Deployer',
+            //     text: 'Your verification code for registration is ' + otp
+            // };
+            // const emailResponse = await sgMail.send(msg)
             const { _id, role, isVerified } = newUser
             const payload = {
                 _id, firstName, lastName, organization, role, email, isVerified
@@ -226,18 +230,19 @@ module.exports = {
             return OTP;
         }
         const otp = generateOTP()
-        const msg = {
-            to: user.email,
-            from: 'hemant@edunomics.in',
-            subject: 'Forgot password for Idea Deployer',
-            text: 'Your verification code for forgot password is ' + otp
-        };
-        await sgMail.send(msg)
+        // const msg = {
+        //     to: user.email,
+        //     from: 'hemant@edunomics.in',
+        //     subject: 'Forgot password for Idea Deployer',
+        //     text: 'Your verification code for forgot password is ' + otp
+        // };
+        // await sgMail.send(msg)
+        const emailResponse = await sendEmail(email, otp, "forgot-password")
         user.otp = otp
         await user.save()
         const helper = async () => {
-            newUser.otp = ""
-            await newUser.save()
+            user.otp = ""
+            await user.save()
         }
         setTimeout(() => {
             helper()
@@ -249,8 +254,8 @@ module.exports = {
     },
     postOTP: async (req, res, next) => {
         let errors = {}
-        const { email, otp, newPassword } = req.body
-        const user = await User.findOne({ email })
+        const {email,otp, newPassword } = req.body
+        const user = await User.findOne({ email})
         if (!user) {
             errors.email = "Invalid email"
             return res.status(404).json(errors)
@@ -262,15 +267,16 @@ module.exports = {
         let hashedPassword = await bcrypt.hash(newPassword, 10)
         user.password = hashedPassword
         await user.save()
+        const { _id, firstName, lastName, organization, role, isVerified } = user
         const payload = {
-            _id, firstName, lastName, organization, role, email:user.email, isVerified
-        } = user
+            _id, firstName, lastName, organization, role, email: user.email, isVerified
+        }
         jwt.sign(
             payload,
             key.secretKey,
             { expiresIn: 14400 },
             (err, token) => {
-               return res.status(200).json({
+              res.json({
                     success: true,
                     message: "Password updated successfully",
                     token: 'Bearer ' + token,
