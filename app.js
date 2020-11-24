@@ -40,7 +40,7 @@ app.use('/api/user', userRoutes)
 
 
 
-app.get("/", (req, res) => { res.send("Here") })
+app.get("/", (req, res) => { res.send("Its working") })
 
 // mongoose.connect(
 //         //    'mongodb+srv://admin-hrms:' + 'BUTTONS007' + '@cluster0-kldnh.mongodb.net/idea-deployer?retryWrites=true&w=majority', {
